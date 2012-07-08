@@ -1,0 +1,81 @@
+#!/bin/bash
+function helptext() {
+cat <<EOF
+#   ------------------------------------------------------------------
+#
+#   Shell program to search a hints file.
+#
+#       This program is designed to be a quick reference if you need
+#       to know something quickly. I use it as a reminder for syntax
+#       of commands that I use infrequently.
+#
+#       (If you have grep colorized, your 'hint' output will be too.)
+#
+#   Usage:
+#
+#       hint [--help] SEARCHTERM
+#
+#       (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+#
+#   External programs req'd:
+#       bash, basename, grep (all standard)
+#   Revision History:
+#       2009-06-21 v1.1   Added handling of comment lines
+#       2009-01-19 v1.0   File created
+#
+#   ------------------------------------------------------------------
+EOF
+}   # end of helptext
+
+# ------------------------------------------------------------------
+# Other notes:
+#   ...
+# ------------------------------------------------------------------
+
+#   Constants
+    declare -r PROGNAME=$(basename $0)
+    HINTDIR=$HOME                       # change this as needed
+    HINTFILE="hints.txt"                # change this as needed
+
+#   ------------------------------------------------------------------
+#   Program starts here
+#   ------------------------------------------------------------------
+
+##### Command Line Processing #####
+
+# If there are no arguments...
+if [ $# -eq 0 ]; then
+  # ...then show the usage explanation.
+  echo "    Usage: ${PROGNAME} [--help] [SearchTerm]"
+  exit 1
+fi
+
+# simple command line parsing
+if [ "$1" = "--help" ]; then
+  helptext
+  exit
+fi
+
+##### Main Logic #####
+
+#if (grep -iq $1 $HINTDIR/$HINTFILE) then # changed to $@ to allow grep options to be passed
+if (grep -iq $@ $HINTDIR/$HINTFILE) then
+  echo
+  # old method of searching:
+  #cat $HINTDIR/$HINTFILE | grep -i $1
+  # ignore lines beginning with 5 slashes and
+  # search the remaining lines for the search term:
+  #grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $1 # changed to $@ to allow grep options to be passed
+  grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $@
+  echo
+else
+  echo
+  #echo "Sorry. $1 is not found in $HINTDIR/$HINTFILE"  # changed to $@ to allow grep options to be passed
+  echo "Sorry. $@ is not found in $HINTDIR/$HINTFILE"
+  echo
+fi
+
+exit
+
+# end of script
+

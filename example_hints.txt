@@ -1,0 +1,112 @@
+hint SEARCHTERM (seaches a hintfile (this file!) for quick help)
+hint ^SEARCHTERM (only looks at the start of the lines)
+
+sudo COMMAND  (if you encounter a 'permission denied', use this)
+
+whatis SEARCHTERM      (quickly tells you what a command is)
+whatis SEARCHTERM      (search the whatis database for complete words)
+apropos SEARCHTERM     (search the whatis database for partial words)
+apropos ^SEARCHTERM    (only looks at the start of the lines)
+
+ll (the same as 'ls -l' and can handle all the modifiers that 'ls' can)
+
+links -dump http://www.com > file (saves plaintext version of website to file)
+
+units FROM TO   (convert stuff)
+units 3-km mi   (convert from 3 kilometers to miles)
+
+figlet MESSAGE (shows MESSAGE written in nice ascii-formed letters.)
+
+find /searchPath -name '*.extension'                 (find all specified files)
+find /searchPath -name '*.ext1' -o -name '*.ext2'    (multiple extensions)
+find /searchPath -iname '*.mpg' -o -iname '*.avi'    (case insensitive)
+find /searchPath -a -size +700M                      (bigger than certain size)
+find /searchPath -a -mtime -15                 (modified less than 15 days ago)
+find /searchPath -name '*.avi' -exec mv '{}' /moveToPath/ \;    (moves results)
+
+find `pwd`|grep searchTerm  (recursively show full path of files & dirs containing searchTerm)
+
+find .|grep searchTerm  (recursively show relative path of files & dirs containing searchTerm)
+
+find . -f|grep searchTerm   (same as [find .|grep searchTerm] but only shows files, no dirs)
+
+find . -exec grep -l "searchTerm" {} \;   (recursively show relative path of files containing searchterm)
+
+grep -ril searchterm .    (same as [find . -exec grep -l "searchterm" {} \;])
+
+scp source destination  (like 'cp' only via ssh, so you need ip addresses)
+scp localFile.ext username@remote.host.net:
+scp localFile.ext username@remote.host.net:path/relative/to/home/
+scp username@remote.host.net:remoteFile.ext localFile.ext
+
+curl -T fileToUpload -u user:passwd ftp://ftp.placeToUpload.com/ (upload via ftp)
+curl -O http://www.website.com/fileToDownload.ext   (download from www)
+
+COMMAND > FileToRedirectSTDOUTto.txt            (overwrites if file exists)
+COMMAND >> FileToRedirectAndAppendSTDOUTto.txt  (appends if file exists)
+COMMAND 2> FileToRedirectSTDERRto.txt           (overwrites if file exists)
+COMMAND 1>&2                (redirect stdout to stderr)
+COMMAND 2>&1                (redirect stderr to stdout)
+COMMAND > /dev/null         (quiet/suppress the stdout of COMMAND)
+COMMAND 2> /dev/null        (quiet/suppress the stderr of COMMAND)
+COMMAND > /dev/null 2>&1    (quiet/suppress the stdout and stderr of COMMAND)
+
+cd            (go to user's home directory)
+cd -          (go to the last dir you were in)
+cd `pwd -P`   (go into the real directory (from a linked directory)
+
+dd if=/dev/zero of=FILENAME bs=1 count=42     (create 42 byte empty file)
+dd if=/dev/urandom of=FILENAME bs=1m count=7  (create 7MB file of random data)
+
+tar -czvf archive.tgz files/    (create a tar/gzipped archive)
+tar -xzvf archive.tgz           (decompress a tar/gzipped archive)
+
+ln -s source symlinkName    (create symbolic link (symlink))
+
+file FILENAME   (identify type of file)
+
+od -a file.ext        (ascii dump of file.ext)
+od -c -t xC file.ext  (ascii(c format) and hex dump of file.ext)
+ 
+top -o cpu  (monitor processes, sorted by CPU usage)
+
+ffmpeg -i videoToExtractFramesFrom.mpg frame%d.jpg   (%3d for 008,009,010...)
+ffmpeg -f image2 -i frame%d.jpg movieToMakeFromTheImageSeries.mpg
+ffmpeg -i <filename>.flv -vn <filename>.mp3   (dump audio to an mp3)
+mplayer -dumpaudio -dumpfile <filename>.mp3 <filename>.flv  (dump audio to an mp3)
+for f in *.flv; do ffmpeg -y -i "$f" -f image2 -ss 10 -vframes 1 -an "${f%.flv}.jpg"; done  (for all flv files in a dir, grab the first frame and make a jpg)
+
+telnet nethack.alt.org    (play or watch Nethack game via telnet)
+
+cut -f 2 FILENAME (display the second field of each line in FILENAME)
+
+gcc inputFilename.c                       (compile C code to a.out)
+gcc inputFilename.c -o outputFilename     (compile C code to specified file)
+gcc inputFilename.c -lncurses             (compile C code that uses ncurses)
+gcc inputFilename.c -std=c99              (compile C99 code)
+g++ inputFilename.cpp                     (compile C++ code to a.out)
+g++ inputFilename.cpp -o outputFilename   (compile C++ code to specified file)
+g++ inputFilename.cpp -Wall               (compile C++ code, showing all warnings)
+
+ifconfig | grep inet    (find out your IP address)
+
+python -m SimpleHTTPServer  (Serve current directory tree at http://$HOSTNAME:8000/)
+
+$_  (BASH: expands to the last argument to the previous command)
+$?  (BASH: expands to the exit status of the most recently executed foreground pipeline)
+!!  (BASH: expands to the previous executed command)
+~   (BASH: expands to value of $HOME)
+~+  (BASH: expands to value of $PWD)
+~-  (BASH: expands to value of $OLDPWD)
+s{e,i,a}d   (BASH: expands to "sed sid sad")
+`command`   (BASH: expands to the output of the command "command")
+$(command)  (BASH: expands to the output of the command "command")
+$((2*5))    (BASH: expands to the arithmatical evaluation of 2 times 5)
+$[2*5]      (BASH: expands to the arithmatical evaluation of 2 times 5, but do no tests(?))
+echo ${!B*}   (BASH: show all defined parameters beginning with B)
+
+for i in {1..5}; do cp test{,$i};done     (Create several copies of a file)
+
+man ls | col -b > man_ls.txt    (output a man page cleanly to txt)
+
+watch -t -n1 date +%T|figlet -W   (display a big textmode clock -- quit with C-c)
