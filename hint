@@ -61,14 +61,14 @@ fi
 
 if (grep -iq $@ $HINTDIR/$HINTFILE) then
   echo
-  # ignore lines beginning with 5 slashes and
-  # search the remaining lines for the search term:
-  grep -i $@ $HINTDIR/$HINTFILE | grep -v '^/////'
+  # ignore lines beginning with 5 slashes and search the remaining lines for
+  # the search term (grep out the comments first so searchterm gets
+  # highlighted):
+  grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $@
   echo
 else
   echo
-  #echo "Sorry. $1 is not found in $HINTDIR/$HINTFILE"  # changed to $@ to allow grep options to be passed
-  echo "Sorry. $@ is not found in $HINTDIR/$HINTFILE"
+  echo "Sorry. \"$@\" is not found in $HINTDIR/$HINTFILE"
   echo
 fi
 
