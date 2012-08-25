@@ -4,7 +4,7 @@ declare -r PROGNAME=$(basename $0)
 HINTDIR=$HOME                       # change this as needed
 HINTFILE="hints.txt"                # change this as needed
 
-# case sensitive search
+# case insensitive search by default
 sensitive=
 
 # colors enabled by default in ttys
@@ -38,14 +38,13 @@ Usage:
   Options:
 
   -s, --sensitive         Force case sensitive search.
-  -i, --insensitive       Force case insensitive search.
+  -i, --insensitive       Force case insensitive search. (default)
+  -c, --colors            Force colors. (default)
   -C, --no-colors         Force avoid colors.
-  -L, --no-linenums       Hide line numbers.
-  -U, --update            Update spot(1)
-  -V, --version           Output version
-  -h, --help              This message.
+  -h, --help              Show help message.
 
   (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+  (Use a capital letter in SEARCHTERM to autoforce case sensitivity.)
 
 EOF
 } # end of usagetext
@@ -72,25 +71,18 @@ function helptext() {
 # parse options
 while [[ "$1" =~ ^- ]]; do
   case $1 in
-    #-V | --version )
-    #  echo $version
-    #  exit
-    #  ;;
     -s | --sensitive )
       sensitive=1
       ;;
     -i | --insensitive )
       sensitive=
       ;;
+    -c | --colors )
+      colors=1
+      ;;
     -C | --no-colors )
       colors=
       ;;
-    #-L | --no-linenums )
-    #  linenums=
-    #  ;;
-    #-U | --update )
-    #  update
-    #  ;;
     -h | --help )
       helptext
       exit
@@ -125,21 +117,23 @@ else
   grepopt="$grepopt --color=never"
 fi
 
-if (grep -iq $@ $HINTDIR/$HINTFILE) then
-  echo
-  # ignore lines beginning with 5 slashes and search the remaining lines for
-  # the search term (grep out the comments first so searchterm gets
-  # highlighted):
-  grep -v '^/////' $HINTDIR/$HINTFILE | grep $grepopt "`echo $@`"
-  echo
+
+
+# A blank line:
+echo ""
+
+# Finally do the search:
+grep -v '^/////' $HINTDIR/$HINTFILE | grep $grepopt "`echo $@`"
+
+if [[ $? -eq 0 ]]; then
+  # If we found results, give me a blank line to separate it from the next prompt:
+  echo ""
+  # A clean exit if a search term was found:
+  exit
 else
-  echo
-  echo "Sorry. \"`echo $@`\" is not found in $HINTDIR/$HINTFILE"
-  echo
-  exit 1  # Error code exit, since nothing was found.
+  # Otherwise, exit with error code:
+  exit 1
 fi
 
-exit  # A clean exit if a search term was found
 
 # end of script
-
