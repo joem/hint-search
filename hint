@@ -4,75 +4,142 @@ declare -r PROGNAME=$(basename $0)
 HINTDIR=$HOME                       # change this as needed
 HINTFILE="hints.txt"                # change this as needed
 
+# case sensitive search
+sensitive=
+
+# colors enabled by default in ttys
+if [ -t 1 ]; then
+  colors=1
+else
+  colors=
+fi
+
+
+function desctext() {
+cat <<EOF
+${PROGNAME} -- search a hints file
+
+  This program is designed to be a quick reference if you need
+  to know something quickly. I use it as a reminder for syntax
+  of commands that I use infrequently.
+
+  (If you have grep colorized, your 'hint' output will be too.)
+
+EOF
+}   # end of desctext
+
+
+function usagetext() {
+cat <<EOF
+Usage:
+
+  ${PROGNAME} [options] SEARCHTERM
+
+  Options:
+
+  -s, --sensitive         Force case sensitive search.
+  -i, --insensitive       Force case insensitive search.
+  -C, --no-colors         Force avoid colors.
+  -L, --no-linenums       Hide line numbers.
+  -U, --update            Update spot(1)
+  -V, --version           Output version
+  -h, --help              This message.
+
+  (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+
+EOF
+} # end of usagetext
+
+
+function misctext() {
+cat <<EOF
+External programs req'd:
+  bash, basename, grep (all standard)
+Revision History:
+  see git log
+
+EOF
+}   # end of misctext
+
+
 function helptext() {
-cat <<EOF
-   ------------------------------------------------------------------
-
-   Shell program to search a hints file.
-
-       This program is designed to be a quick reference if you need
-       to know something quickly. I use it as a reminder for syntax
-       of commands that I use infrequently.
-
-       (If you have grep colorized, your 'hint' output will be too.)
-
-   Usage:
-
-       ${PROGNAME} [--help] SEARCHTERM
-
-       (Preface SEARCHTERM with a ^ to only search start-of-lines.)
-
-   External programs req'd:
-       bash, basename, grep (all standard)
-   Revision History: see git log
-
-   ------------------------------------------------------------------
-EOF
-}   # end of helptext
+  desctext
+  usagetext
+  misctext
+}
 
 
-function usage() {
-cat <<EOF
-    Usage: ${PROGNAME} [--help] [SearchTerm]"
-EOF
-} # end of usage
+# parse options
+while [[ "$1" =~ ^- ]]; do
+  case $1 in
+    #-V | --version )
+    #  echo $version
+    #  exit
+    #  ;;
+    -s | --sensitive )
+      sensitive=1
+      ;;
+    -i | --insensitive )
+      sensitive=
+      ;;
+    -C | --no-colors )
+      colors=
+      ;;
+    #-L | --no-linenums )
+    #  linenums=
+    #  ;;
+    #-U | --update )
+    #  update
+    #  ;;
+    -h | --help )
+      helptext
+      exit
+      ;;
+  esac
+  shift
+done
 
-
-
-#   ------------------------------------------------------------------
-#   Program starts here
-#   ------------------------------------------------------------------
-
-##### Command Line Processing #####
-
-# If there are no arguments...
-if [ $# -eq 0 ]; then
-  usage
+# check for empty search
+if [[ "" = "$@" ]]; then
+  usagetext
   exit 1
 fi
 
-# simple command line parsing
-if [ "$1" = "--help" ]; then
-  helptext
-  exit
+# auto-detect case sensitive based on an uppercase letter
+if [[ "$@" =~ [A-Z] ]]; then
+  sensitive=1
 fi
 
-##### Main Logic #####
+# grep default params
+grepopt=
+
+# add case insensitive search
+if [ ! $sensitive ]; then
+  grepopt="$grepopt --ignore-case"
+fi
+
+# add force colors
+if [ $colors ]; then
+  grepopt="$grepopt --color=always"
+else
+  grepopt="$grepopt --color=never"
+fi
 
 if (grep -iq $@ $HINTDIR/$HINTFILE) then
   echo
   # ignore lines beginning with 5 slashes and search the remaining lines for
   # the search term (grep out the comments first so searchterm gets
   # highlighted):
-  grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $@
+  grep -v '^/////' $HINTDIR/$HINTFILE | grep $grepopt "`echo $@`"
   echo
 else
   echo
-  echo "Sorry. \"$@\" is not found in $HINTDIR/$HINTFILE"
+  echo "Sorry. \"`echo $@`\" is not found in $HINTDIR/$HINTFILE"
   echo
+  exit 1  # Error code exit, since nothing was found.
 fi
 
-exit
+exit  # A clean exit if a search term was found
 
 # end of script
 
