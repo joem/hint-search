@@ -65,8 +65,7 @@ if (grep -iq $@ $HINTDIR/$HINTFILE) then
   #cat $HINTDIR/$HINTFILE | grep -i $1
   # ignore lines beginning with 5 slashes and
   # search the remaining lines for the search term:
-  #grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $1 # changed to $@ to allow grep options to be passed
-  grep -v '^/////' $HINTDIR/$HINTFILE | grep -i $@
+  grep -i $@ $HINTDIR/$HINTFILE | grep -v '^/////'
   echo
 else
   echo
