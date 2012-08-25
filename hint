@@ -1,41 +1,43 @@
 #!/bin/bash
+
+declare -r PROGNAME=$(basename $0)
+HINTDIR=$HOME                       # change this as needed
+HINTFILE="hints.txt"                # change this as needed
+
 function helptext() {
 cat <<EOF
-#   ------------------------------------------------------------------
-#
-#   Shell program to search a hints file.
-#
-#       This program is designed to be a quick reference if you need
-#       to know something quickly. I use it as a reminder for syntax
-#       of commands that I use infrequently.
-#
-#       (If you have grep colorized, your 'hint' output will be too.)
-#
-#   Usage:
-#
-#       hint [--help] SEARCHTERM
-#
-#       (Preface SEARCHTERM with a ^ to only search start-of-lines.)
-#
-#   External programs req'd:
-#       bash, basename, grep (all standard)
-#   Revision History:
-#       2009-06-21 v1.1   Added handling of comment lines
-#       2009-01-19 v1.0   File created
-#
-#   ------------------------------------------------------------------
+   ------------------------------------------------------------------
+
+   Shell program to search a hints file.
+
+       This program is designed to be a quick reference if you need
+       to know something quickly. I use it as a reminder for syntax
+       of commands that I use infrequently.
+
+       (If you have grep colorized, your 'hint' output will be too.)
+
+   Usage:
+
+       ${PROGNAME} [--help] SEARCHTERM
+
+       (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+
+   External programs req'd:
+       bash, basename, grep (all standard)
+   Revision History: see git log
+
+   ------------------------------------------------------------------
 EOF
 }   # end of helptext
 
-# ------------------------------------------------------------------
-# Other notes:
-#   ...
-# ------------------------------------------------------------------
 
-#   Constants
-    declare -r PROGNAME=$(basename $0)
-    HINTDIR=$HOME                       # change this as needed
-    HINTFILE="hints.txt"                # change this as needed
+function usage() {
+cat <<EOF
+    Usage: ${PROGNAME} [--help] [SearchTerm]"
+EOF
+} # end of usage
+
+
 
 #   ------------------------------------------------------------------
 #   Program starts here
@@ -45,8 +47,7 @@ EOF
 
 # If there are no arguments...
 if [ $# -eq 0 ]; then
-  # ...then show the usage explanation.
-  echo "    Usage: ${PROGNAME} [--help] [SearchTerm]"
+  usage
   exit 1
 fi
 
@@ -58,11 +59,8 @@ fi
 
 ##### Main Logic #####
 
-#if (grep -iq $1 $HINTDIR/$HINTFILE) then # changed to $@ to allow grep options to be passed
 if (grep -iq $@ $HINTDIR/$HINTFILE) then
   echo
-  # old method of searching:
-  #cat $HINTDIR/$HINTFILE | grep -i $1
   # ignore lines beginning with 5 slashes and
   # search the remaining lines for the search term:
   grep -i $@ $HINTDIR/$HINTFILE | grep -v '^/////'
