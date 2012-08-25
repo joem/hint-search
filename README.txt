@@ -1,21 +1,30 @@
-Shell program to search a hints file.
+hint -- search a hints file
 
-    This program is designed to be a quick reference if you need to know
-    something quickly. I use it as a reminder for syntax of commands that I use
-    infrequently.
+  This program is designed to be a quick reference if you need
+  to know something quickly. I use it as a reminder for syntax
+  of commands that I use infrequently.
 
-    (If you have grep colorized, your 'hint' output will be too.)
+  (If you have grep colorized, your 'hint' output will be too.)
 
 Usage:
 
-    hint [--help] SEARCHTERM
+  hint [options] SEARCHTERM
 
-    (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+  Options:
+
+  -s, --sensitive         Force case sensitive search.
+  -i, --insensitive       Force case insensitive search. (default)
+  -c, --colors            Force colors. (default)
+  -C, --no-colors         Force avoid colors.
+  -h, --help              Show help message.
+
+  (Preface SEARCHTERM with a ^ to only search start-of-lines.)
+  (Use a capital letter in SEARCHTERM to autoforce case sensitivity.)
 
 External programs req'd:
-    bash, basename, grep (all standard, unless you're on Windows)
+  bash, basename, grep (all standard, unless you're on Windows)
 Revision History:
-    check the git log
+  see git log
 
 ----------------------------------------------------------------
 

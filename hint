@@ -53,7 +53,7 @@ EOF
 function misctext() {
 cat <<EOF
 External programs req'd:
-  bash, basename, grep (all standard)
+  bash, basename, grep (all standard, unless you're on Windows)
 Revision History:
   see git log
 
