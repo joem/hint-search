@@ -1,4 +1,5 @@
 hint -- search a hints file
+===========================
 
   This program is designed to be a quick reference if you need
   to know something quickly. I use it as a reminder for syntax
@@ -7,6 +8,7 @@ hint -- search a hints file
   (If you have grep colorized, your 'hint' output will be too.)
 
 Usage:
+------
 
   hint [options] SEARCHTERM
 
@@ -17,6 +19,7 @@ Usage:
   -c, --colors            Force colors. (default)
   -C, --no-colors         Force avoid colors.
   -h, --help              Show help message.
+  -e, --edit              Edit the hintfile.
 
   (Preface SEARCHTERM with a ^ to only search start-of-lines.)
   (Use a capital letter in SEARCHTERM to autoforce case sensitivity.)
@@ -27,6 +30,9 @@ Revision History:
   see git log
 
 ----------------------------------------------------------------
+
+INSTALLATION
+------------
 
 To operate "hint" with its default settings, you must first move the file
 "hint" to a location in your path. A good location that is typically in one's

@@ -42,6 +42,7 @@ Usage:
   -c, --colors            Force colors. (default)
   -C, --no-colors         Force avoid colors.
   -h, --help              Show help message.
+  -e, --edit              Edit the hintfile.
 
   (Preface SEARCHTERM with a ^ to only search start-of-lines.)
   (Use a capital letter in SEARCHTERM to autoforce case sensitivity.)
@@ -60,6 +61,19 @@ Revision History:
 EOF
 }   # end of misctext
 
+function edittext() {
+  echo "Editing $HINTDIR/$HINTFILE"
+  # Open with whatever $EDITOR is set to, or vi if that's not set:
+  "${EDITOR:-vi}" $HINTDIR/$HINTFILE
+
+  # Other options:
+  # # Specifically open with an app named TextEdit:
+  # open -a TextEdit $HINTDIR/$HINTFILE
+  # # Specifically open with TextEdit:
+  # open -e $HINTDIR/$HINTFILE
+  # # Open in whatever the default text editor is:
+  # open -t $HINTDIR/$HINTFILE
+}
 
 function helptext() {
   desctext
@@ -71,6 +85,14 @@ function helptext() {
 # parse options
 while [[ "$1" =~ ^- ]]; do
   case $1 in
+    -e | --edit )
+      edittext
+      exit
+      ;;
+    -h | --help )
+      helptext
+      exit
+      ;;
     -s | --sensitive )
       sensitive=1
       ;;
@@ -82,10 +104,6 @@ while [[ "$1" =~ ^- ]]; do
       ;;
     -C | --no-colors )
       colors=
-      ;;
-    -h | --help )
-      helptext
-      exit
       ;;
   esac
   shift
