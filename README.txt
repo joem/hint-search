@@ -56,3 +56,9 @@ following lines in "hint" as you see fit:
 HINTDIR=$HOME
 HINTFILE="hints.txt"
 
+
+EXTRA
+-----
+
+You may like to use some simple Vim highlighting when editing your hintfile. If so, please see [https://github.com/joem/vim-hints_syntax](https://github.com/joem/vim-hints_syntax).
+
