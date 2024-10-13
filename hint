@@ -1,6 +1,8 @@
 #!/bin/bash
 
-declare -r PROGNAME=$(basename $0)
+VERSION="v1.1.0"
+PROGNAME=$(basename "$0")
+declare -r PROGNAME
 HINTDIR=$HOME                       # change this as needed
 HINTFILE="hints.txt"                # change this as needed
 
@@ -14,10 +16,13 @@ else
   colors=
 fi
 
+function versiontext() {
+  echo "${PROGNAME} ${VERSION}"
+}
 
 function desctext() {
 cat <<EOF
-${PROGNAME} -- search a hints file
+${PROGNAME} ${VERSION} -- search a hints file
 
   This program is designed to be a quick reference if you need
   to know something quickly. I use it as a reminder for syntax
@@ -64,7 +69,7 @@ EOF
 function edittext() {
   echo "Editing $HINTDIR/$HINTFILE"
   # Open with whatever $EDITOR is set to, or vi if that's not set:
-  "${EDITOR:-vi}" $HINTDIR/$HINTFILE
+  "${EDITOR:-vi}" "$HINTDIR/$HINTFILE"
 
   # Other options:
   # # Specifically open with an app named TextEdit:
@@ -93,6 +98,10 @@ while [[ "$1" =~ ^- ]]; do
       helptext
       exit
       ;;
+    -v | --version )
+      versiontext
+      exit
+      ;;
     -s | --sensitive )
       sensitive=1
       ;;
@@ -110,40 +119,37 @@ while [[ "$1" =~ ^- ]]; do
 done
 
 # check for empty search
-if [[ "" = "$@" ]]; then
+if [[ ${#@} == 0 ]]; then
   usagetext
   exit 1
 fi
 
 # auto-detect case sensitive based on an uppercase letter
-if [[ "$@" =~ [A-Z] ]]; then
+if [[ "$*" =~ [A-Z] ]]; then
   sensitive=1
 fi
 
 # grep default params
-grepopt=
+grepopt=()
 
 # add case insensitive search
 if [ ! $sensitive ]; then
-  grepopt="$grepopt --ignore-case"
+  grepopt=("${grepopt[@]}" --ignore-case)
 fi
 
 # add force colors
 if [ $colors ]; then
-  grepopt="$grepopt --color=always"
+  grepopt=("${grepopt[@]}" --color=always)
 else
-  grepopt="$grepopt --color=never"
+  grepopt=("${grepopt[@]}" --color=never)
 fi
-
-
 
 # A blank line:
 echo ""
 
-# Finally do the search:
-grep -v '^/////' $HINTDIR/$HINTFILE | grep $grepopt "`echo $@`"
-
-if [[ $? -eq 0 ]]; then
+# Finally do the search and create the correct exit code:
+if grep -v '^/////' "$HINTDIR/$HINTFILE" | grep "${grepopt[@]}" "$@"
+then
   # If we found results, give me a blank line to separate it from the next prompt:
   echo ""
   # A clean exit if a search term was found:
@@ -152,6 +158,5 @@ else
   # Otherwise, exit with error code:
   exit 1
 fi
-
 
 # end of script
